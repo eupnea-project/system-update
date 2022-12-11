@@ -2,9 +2,36 @@
 
 # This script is used to update Depthboot between releases.
 
-from functions import *
+import json
 
 if __name__ == "__main__":
-    print("To-Do")
-    with open("/tmp/i-updated.txt", "w") as f:
-        f.write("1")
+    # Check if running under Depthboot or EupneaOS
+    with open("/etc/eupnea.json", "r") as f:
+        config = json.load(f)
+    try:
+        current_version = config["depthboot_version"]
+        os_type = "depthboot_version"
+        with open("/tmp/eupnea-system-update/depthboot_versions.txt", "r") as f:
+            versions_array = f.readlines()
+        from depthboot_updates import *  # import the depthboot updates
+    except KeyError:
+        current_version = config["eupnea_os_version"]
+        os_type = "eupnea_os_version"
+        # Convert versions.txt into an array
+        with open("/tmp/eupnea-system-update/eupnea_os_versions.txt", "r") as f:
+            versions_array = f.readlines()
+        from eupnea_os_updates import *  # import the EupneaOS updates
+
+    # Remove versions older than current version from the array
+    versions_array = versions_array[versions_array.index(current_version) + 1:]
+
+    if len(versions_array) == 0:
+        # No updates available.
+        exit(0)
+    else:
+        # Execute update scripts for all versions in the array
+        for version in versions_array:
+            version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
+            globals()[version]()  # This calls the function named after the version
+        # Update version in config with the latest version in the array
+        config[os_type] = versions_array[-1]
