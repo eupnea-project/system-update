@@ -12,14 +12,14 @@ if __name__ == "__main__":
         current_version = config["depthboot_version"]
         os_type = "depthboot_version"
         with open("/tmp/eupnea-system-update/configs/depthboot_versions.txt", "r") as f:
-            versions_array = f.readlines()
+            versions_array = f.read().splitlines()
         from depthboot_updates import *  # import the depthboot updates
     except KeyError:
         current_version = config["eupnea_os_version"]
         os_type = "eupnea_os_version"
         # Convert versions.txt into an array
         with open("/tmp/eupnea-system-update/configs/eupnea_os_versions.txt", "r") as f:
-            versions_array = f.readlines()
+            versions_array = f.read().splitlines()
         from eupnea_os_updates import *  # import the EupneaOS updates
 
     # Remove versions older than current version from the array
