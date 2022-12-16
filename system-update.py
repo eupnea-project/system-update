@@ -3,6 +3,7 @@
 # This script is used to update Depthboot/EupneaOS between releases.
 
 import json
+from functions import *
 
 if __name__ == "__main__":
     # Check if running under Depthboot or EupneaOS
@@ -32,8 +33,11 @@ if __name__ == "__main__":
         # Execute update scripts for all versions in the array
         for version in versions_array:
             version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
-            globals()[version]()  # This calls the function named after the version
+            globals()["v" + version]()  # This calls the function named after the version
         # Update version in config with the latest version in the array
         config[os_type] = versions_array[-1]
         with open("/etc/eupnea.json", "w") as file:
             json.dump(config, file)
+
+    # remove the update directory
+    rmdir("/tmp/eupnea-system-update", keep_dir=False)
