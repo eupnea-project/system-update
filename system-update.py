@@ -33,7 +33,7 @@ if __name__ == "__main__":
         # Execute update scripts for all versions in the array
         for version in versions_array:
             version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
-            globals()["v" + version]()  # This calls the function named after the version
+            globals()[f"v{version}"]()  # This calls the function named after the version
         # Update version in config with the latest version in the array
         config[os_type] = versions_array[-1]
         with open("/etc/eupnea.json", "w") as file:
