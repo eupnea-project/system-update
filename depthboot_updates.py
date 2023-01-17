@@ -8,7 +8,26 @@ def v1_1_0():
     pass
 
 
-def v1_2_0():
-    # This update is not written yet.
-    # This update will probably remove the manage-kernels script and replace it with packages.
-    pass
+def v1_1_1():
+    # This update adds a fix for auto rotate being flipped on some devices.
+    # It has been added to the depthboot script a few weeks prior to this update
+    cpfile("/tmp/eupnea-system-update/configs/configs/hwdb/61-sensor.hwdb", "/etc/udev/hwdb.d/61-sensor.hwdb")
+    bash("systemd-hwdb update")
+
+    # Remove old eupnea-utils scripts
+    rmfile("/usr/lib/eupnea/eupnea-postinstall")  # has been renamed to just postinstall
+    rmfile("/usr/lib/eupnea/eupnea-update")  # has been included accidentally in the package
+
+    # Remove unneeded settings from /etc/eupnea.json
+    with open("/etc/eupnea.json", "r") as f:
+        config = json.load(f)
+    del config["kernel_type"]
+    del config["kernel_version"]
+    del config["kernel_dev"]
+    with contextlib.suppress(KeyError):
+        # these settings were already removed in v1.1.0, but the json file on GitHub was not updated, therefore
+        # some new installs still have them
+        del config["postinstall_version"]
+        del config["audio_version"]
+    with open("/etc/eupnea.json", "w") as file:
+        json.dump(config, file)
