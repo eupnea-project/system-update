@@ -31,3 +31,9 @@ def v1_1_1():
         del config["audio_version"]
     with open("/etc/eupnea.json", "w") as file:
         json.dump(config, file)
+
+    if config["distro_name"] == "arch" and config["de_name"] != "cli":
+        # the auto-rotate service is not installed by default on Arch
+        bash("pacman -Syyu --noconfirm")  # update the package database
+        bash("pacman -S --noconfirm iio-sensor-proxy")
+        # after a reboot the auto-rotate service will automatically be "integrated" into the DE
