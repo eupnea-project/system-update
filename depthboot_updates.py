@@ -46,4 +46,4 @@ def v1_1_1():
 
 def v1_1_2():
     # the depthboot_updates.py file was missing some imports and therefore the v1.1.1 update was not applied
-    v1_1_0()
+    v1_1_1()
