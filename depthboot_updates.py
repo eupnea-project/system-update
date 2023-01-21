@@ -2,6 +2,11 @@
 # The functions are named after the version they update to. For example, the update script for v1.1.0 is named v1_1_0().
 # Read the full changelog here: https://github.com/eupnea-linux/depthboot-builder/releases
 
+import contextlib
+from functions import *
+import json
+
+
 def v1_1_0():
     # This update was done by the old scripts updater script. It is only here for reference.
     # update-scripts.py can be found here:  https://github.com/eupnea-linux/postinstall-scripts/blob/main/update-scripts
@@ -21,12 +26,12 @@ def v1_1_1():
     # Remove unneeded settings from /etc/eupnea.json
     with open("/etc/eupnea.json", "r") as f:
         config = json.load(f)
-    del config["kernel_type"]
-    del config["kernel_version"]
-    del config["kernel_dev"]
     with contextlib.suppress(KeyError):
         # these settings were already removed in v1.1.0, but the json file on GitHub was not updated, therefore
-        # some new installs still have them
+        # some newer installs still have them
+        del config["kernel_type"]
+        del config["kernel_version"]
+        del config["kernel_dev"]
         del config["postinstall_version"]
         del config["audio_version"]
     with open("/etc/eupnea.json", "w") as file:
@@ -37,3 +42,8 @@ def v1_1_1():
         bash("pacman -Syyu --noconfirm")  # update the package database
         bash("pacman -S --noconfirm iio-sensor-proxy")
         # after a reboot the auto-rotate service will automatically be "integrated" into the DE
+
+
+def v1_1_2():
+    # the depthboot_updates.py file was missing some imports and therefore the v1.1.1 update was not applied
+    v1_1_0()
