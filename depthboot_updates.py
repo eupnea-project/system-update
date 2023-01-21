@@ -26,14 +26,20 @@ def v1_1_1():
     # Remove unneeded settings from /etc/eupnea.json
     with open("/etc/eupnea.json", "r") as f:
         config = json.load(f)
+
+    # these settings were already removed in v1.1.0, but the json file on GitHub was not updated, therefore
+    # some newer installs still have them
     with contextlib.suppress(KeyError):
-        # these settings were already removed in v1.1.0, but the json file on GitHub was not updated, therefore
-        # some newer installs still have them
         del config["kernel_type"]
+    with contextlib.suppress(KeyError):
         del config["kernel_version"]
+    with contextlib.suppress(KeyError):
         del config["kernel_dev"]
+    with contextlib.suppress(KeyError):
         del config["postinstall_version"]
+    with contextlib.suppress(KeyError):
         del config["audio_version"]
+
     with open("/etc/eupnea.json", "w") as file:
         json.dump(config, file)
 
@@ -46,4 +52,5 @@ def v1_1_1():
 
 def v1_1_2():
     # the depthboot_updates.py file was missing some imports and therefore the v1.1.1 update was not applied
+    # There were also a few other minor fixes
     v1_1_1()
