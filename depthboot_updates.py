@@ -16,7 +16,7 @@ def v1_1_0():
 def v1_1_1():
     # This update adds a fix for auto rotate being flipped on some devices.
     # It has been added to the depthboot script a few weeks prior to this update
-    cpfile("/tmp/eupnea-system-update/configs/configs/hwdb/61-sensor.hwdb", "/etc/udev/hwdb.d/61-sensor.hwdb")
+    cpfile("/tmp/eupnea-system-update/configs/hwdb/61-sensor.hwdb", "/etc/udev/hwdb.d/61-sensor.hwdb")
     bash("systemd-hwdb update")
 
     # Remove old eupnea-utils scripts
