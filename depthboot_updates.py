@@ -62,12 +62,10 @@ def v1_1_3():
         config = json.load(f)
     match config["distro_name"]:
         case "arch":
-            bash("pacman -Syyu --noconfirm")  # update the package database
             bash("pacman -S --noconfirm zram-generator")
             # add zram-generator config
             cpfile("/tmp/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
         case "ubuntu":
-            bash("apt-get update -y")
             bash("apt-get install -y systemd-zram-generator")
         case _:
             pass
