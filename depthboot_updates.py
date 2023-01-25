@@ -54,3 +54,61 @@ def v1_1_2():
     # the depthboot_updates.py file was missing some imports and therefore the v1.1.1 update was not applied
     # There were also a few other minor fixes
     v1_1_1()
+
+
+def v1_1_3():
+    # This update installs zram on systems that were not installed with zram
+    with open("/etc/eupnea.json", "r") as f:
+        config = json.load(f)
+    match config["distro_name"]:
+        case "arch":
+            bash("pacman -Syyu --noconfirm")  # update the package database
+            bash("pacman -S --noconfirm zram-generator")
+            # add zram-generator config
+            cpfile("/tmp/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
+        case "ubuntu":
+            bash("apt-get update -y")
+            bash("apt-get install -y systemd-zram-generator")
+        case _:
+            pass
+        # fedora and pop os already have zram installed and setup ootb
+        # PopOS' zram generator only seems to work on new mainline kernels (possible on new chromeos kernels too)
+        # -> might not work until v1.2.0 (kernel package update)
+        # Debian has no systemd-zram-generator package
+
+#
+# def v1_2_0():
+#     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
+#     # and uninstalls the cloud-utils package as it's no longer needed.
+#
+#     # some older installs might still have this option in eupnea.json
+#     with open("/etc/eupnea.json", "r") as f:
+#         config = json.load(f)
+#     with contextlib.suppress(KeyError):
+#         del config["dev_build"]
+#     with open("/etc/eupnea.json", "w") as file:
+#         json.dump(config, file)
+#
+#     # Force stop and disable the old kernel update script
+#     with contextlib.suppress(KeyError):  # services might be deleted already, if the install is a bit newer
+#         bash("systemctl stop eupnea-update.timer eupnea-update.service")
+#         bash("systemctl disable eupnea-update.timer eupnea-update.service")
+#     # Remove the old kernel update script
+#     rmfile("/etc/systemd/system/eupnea-update.timer")
+#     rmfile("/etc/systemd/system/eupnea-update.service")
+#     # Remove old kernel modules load config
+#     rmfile("/etc/modules-load.d/eupnea-modules.conf")
+#
+#     # Download and install the new kernel package with the system package manager + uninstall cloud-utils
+#     if path_exists("/usr/bin/apt"):
+#         bash("apt-get update -y")
+#         bash("apt-get install -y eupnea-kernel")
+#         bash("apt-get purge -y cloud-utils")
+#     elif path_exists("/usr/bin/pacman"):
+#         bash("pacman -Syyu --noconfirm")
+#         bash("pacman -S --noconfirm eupnea-kernel")
+#         bash("pacman -R --noconfirm cloud-utils")
+#     elif path_exists("/usr/bin/dnf"):
+#         bash("dnf update --refresh -y")
+#         bash("dnf install -y eupnea-kernel")
+#         bash("dnf remove -y cloud-utils")
