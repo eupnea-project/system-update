@@ -30,7 +30,7 @@ def rmdir(rm_dir: str, keep_dir: bool = True) -> None:
         unlink_files(rm_dir_as_path)
     except RecursionError:  # python doesn't work for folders with a lot of subfolders
         print(f"Failed to remove {rm_dir} with python, using bash")
-        bash(f"rm -rf {rm_dir_as_path.absolute().as_posix()}")
+        bash(f"rm -rf {rm_dir_as_path.absolute().as_posix()}/*")
     # Remove emtpy directory
     if not keep_dir:
         try:
@@ -189,6 +189,7 @@ def download_file(url: str, path: str) -> None:
 def _print_download_progress(file_path: Path, total_size) -> None:
     while True:
         if path_exists(".stop_download_progress"):
+            rmfile(".stop_download_progress")
             return
         try:
             print("\rDownloading: " + "%.0f" % int(file_path.stat().st_size / 1048576) + "mb / "
