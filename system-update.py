@@ -24,7 +24,12 @@ if __name__ == "__main__":
         from eupnea_os_updates import *  # import the EupneaOS updates
 
     # Remove versions older than current version from the array
-    versions_array = versions_array[versions_array.index(current_version) + 1:]
+    try:
+        versions_array = versions_array[versions_array.index(current_version) + 1:]
+    except ValueError:
+        print_error("Your local eupnea version is higher than the package version. This should not happen. Please "
+                    "report this issue on the Eupnea GitHub.")
+        exit(1)
 
     if len(versions_array) == 0:
         # No updates available.
