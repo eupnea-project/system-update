@@ -43,11 +43,11 @@ def v1_1_1():
     with open("/etc/eupnea.json", "w") as file:
         json.dump(config, file)
 
-    if config["distro_name"] == "arch" and config["de_name"] != "cli":
-        # the auto-rotate service is not installed by default on Arch
-        bash("pacman -Syyu --noconfirm")  # update the package database
-        bash("pacman -S --noconfirm iio-sensor-proxy")
-        # after a reboot the auto-rotate service will automatically be "integrated" into the DE
+    # if config["distro_name"] == "arch" and config["de_name"] != "cli":
+    # the auto-rotate service is not installed by default on Arch
+    # bash("pacman -Syyu --noconfirm")  # update the package database
+    # bash("pacman -S --noconfirm iio-sensor-proxy")
+    # after a reboot the auto-rotate service will automatically be "integrated" into the DE
 
 
 def v1_1_2():
@@ -60,19 +60,22 @@ def v1_1_3():
     # This update installs zram on systems that were not installed with zram
     with open("/etc/eupnea.json", "r") as f:
         config = json.load(f)
-    match config["distro_name"]:
-        case "arch":
-            bash("pacman -S --noconfirm zram-generator")
-            # add zram-generator config
-            cpfile("/tmp/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
-        case "ubuntu":
-            bash("apt-get install -y systemd-zram-generator")
-        case _:
-            pass
-        # fedora and pop os already have zram installed and setup ootb
-        # PopOS' zram generator only seems to work on new mainline kernels (possible on new chromeos kernels too)
-        # -> might not work until v1.2.0 (kernel package update)
-        # Debian has no systemd-zram-generator package
+    # fedora and pop os already have zram installed and setup ootb
+    # PopOS' zram generator only seems to work on new mainline kernels (possible on new chromeos kernels too)
+    # -> might not work until v1.2.0 (kernel package update)
+    # Debian has no systemd-zram-generator package
+    if config["distro_name"] in ["arch", "ubuntu"]:
+        cpfile("/tmp/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
+               "/etc/systemd/system/eupnea-system-update-v1.1.3.service")
+        cpfile("/tmp/eupnea-system-update/configs/bash-scripts/", "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
+        bash("systemctl enable eupnea-system-update-v1.1.3.service")
+
+
+def v1_1_4():
+    # The previous update tried to install a package from inside a postinstall script which does not work as the
+    # apt/pacman processes have lock files
+    # The v1.1.3 update has now been fixed and this update reruns the v1.1.3 update
+    v1_1_3()
 
 #
 # def v1_2_0():
