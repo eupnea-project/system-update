@@ -5,11 +5,11 @@
 
 # Check if apt is installed
 if command -v apt-get >/dev/null 2>&1; then
-  apt-get install -y systemd-zram-generator iio-sensor-proxy
+  apt-get install -y systemd-zram-generator
 else
   # Check if pacman is installed
   if command -v pacman >/dev/null 2>&1; then
-    sudo pacman -S zram-generator
+    sudo pacman -S --noconfirm zram-generator iio-sensor-proxy
   fi
 fi
 
