@@ -6,7 +6,7 @@ from urllib.request import urlopen, urlretrieve
 import subprocess
 
 verbose = False
-disable_download = False
+no_download_progress = False
 
 
 #######################################################################################
@@ -133,7 +133,7 @@ def set_verbose(new_state: bool) -> None:
 
 # This is for non-interactive shells
 def disable_download_progress() -> None:
-    global disable_download
+    global no_download_progress
     disable_download = True
 
 
@@ -172,7 +172,7 @@ def extract_file(file: str, dest: str) -> None:
 
 def download_file(url: str, path: str) -> None:
     # start monitor in a separate thread
-    if not disable_download:  # for non-interactive shells only
+    if not no_download_progress:  # for non-interactive shells only
         rmfile(".stop_download_progress")
         # get total file size from server
         total_file_size = int(urlopen(url).headers["Content-Length"])
