@@ -67,7 +67,8 @@ def v1_1_3():
     if config["distro_name"] in ["arch", "ubuntu"]:
         cpfile("/tmp/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
                "/etc/systemd/system/eupnea-system-update-v1.1.3.service")
-        cpfile("/tmp/eupnea-system-update/configs/bash-scripts/", "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
+        cpfile("/tmp/eupnea-system-update/configs/bash-scripts/update-v1.1.3-postinstall.sh",
+               "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
         bash("systemctl enable eupnea-system-update-v1.1.3.service")
 
 
