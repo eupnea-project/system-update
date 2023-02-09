@@ -32,19 +32,25 @@ if __name__ == "__main__":
     args = process_args()
     temp_output = parse_package_list(args.package_list)
 
-    # Wait for apt to be ready
+    if len(temp_output[0]) == 0 and len(temp_output[1]) == 0:
+        exit(0)
+
+    # Wait for pacman to be ready
     while True:
         try:
-            bash("apt-get check")
+            bash("dnf update -y")
         except subprocess.CalledProcessError:
             sleep(5)
             continue
         break
 
+    # force-update all repos
+    bash("dnf update -y --refresh")
+
     # install packages
     if len(temp_output[0]) > 0:
-        print("apt-get install -y " + " ".join(temp_output[0]))
+        print("dnf install -y " + " ".join(temp_output[0]))
 
     # remove packages
     if len(temp_output[1]) > 0:
-        print("apt-get remove -y " + " ".join(temp_output[1]))
+        print("dnf install -y " + " ".join(temp_output[1]))

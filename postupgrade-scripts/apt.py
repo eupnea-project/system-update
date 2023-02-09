@@ -32,14 +32,20 @@ if __name__ == "__main__":
     args = process_args()
     temp_output = parse_package_list(args.package_list)
 
+    if len(temp_output[0]) == 0 and len(temp_output[1]) == 0:
+        exit(0)
+
     # Wait for apt to be ready
     while True:
         try:
-            bash("apt-get check")
+            bash("apt-get update")
         except subprocess.CalledProcessError:
             sleep(5)
             continue
         break
+
+    # Force update all repos
+    bash("apt-get update -y")
 
     # install packages
     if len(temp_output[0]) > 0:
