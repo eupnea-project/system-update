@@ -97,6 +97,7 @@ def v1_1_5():
             service = service.replace("insert_package_list", "systemd-zram-generator --distro_only ubuntu")
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
+            bash("systemct daemon-reload")
             bash("systemctl start eupnea-update.service")  # start the service
         case "arch":
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
@@ -105,6 +106,7 @@ def v1_1_5():
             service = service.replace("insert_package_list", "iio-sensor-proxy zram-generator --distro_only arch")
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
+            bash("systemct daemon-reload")
             bash("systemctl start eupnea-update.service")  # start the service
         case _:
             # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
