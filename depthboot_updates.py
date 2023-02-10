@@ -88,7 +88,7 @@ def v1_1_5():
     # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
     # files -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
     with open("/etc/eupnea.json") as f:
-        distro_name = json.load(f)["distro"]
+        distro_name = json.load(f)["distro_name"]
     match distro_name:
         case "ubuntu":
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
