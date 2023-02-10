@@ -61,15 +61,15 @@ def v1_1_3():
     with open("/etc/eupnea.json", "r") as f:
         config = json.load(f)
     # fedora and pop os already have zram installed and setup ootb
-    # PopOS' zram generator only seems to work on new mainline kernels (possible on new chromeos kernels too)
+    # PopOS' zram generator only seems to work on new mainline kernels (possibly on new chromeos kernels too)
     # -> might not work until v1.2.0 (kernel package update)
     # Debian has no systemd-zram-generator package
-    if config["distro_name"] in ["arch", "ubuntu"]:
-        cpfile("/tmp/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
-               "/etc/systemd/system/eupnea-system-update-v1.1.3.service")
-        cpfile("/tmp/eupnea-system-update/configs/bash-scripts/update-v1.1.3-postinstall.sh",
-               "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
-        bash("systemctl enable eupnea-system-update-v1.1.3.service")
+    # if config["distro_name"] in ["arch", "ubuntu"]:
+    #     cpfile("/tmp/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
+    #            "/etc/systemd/system/eupnea-system-update-v1.1.3.service")
+    #     cpfile("/tmp/eupnea-system-update/configs/bash-scripts/update-v1.1.3-postinstall.sh",
+    #            "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
+    #     bash("systemctl enable eupnea-system-update-v1.1.3.service")
 
 
 def v1_1_4():
@@ -78,18 +78,63 @@ def v1_1_4():
     # The v1.1.3 update has now been fixed and this update reruns the v1.1.3 update
     v1_1_3()
 
+
+def v1_1_5():
+    # All previous updates tried installing and uninstalling packages from within this script which did not work due to
+    # the package manager processes having lock files
+    # This update will trigger the new systemd service which waits for the package manager to finish and
+    # installs/removes packages after that
+
+    # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock files
+    # -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
+    with open("/etc/eupnea.json") as f:
+        distro_name = json.load(f)["distro"]
+    match distro_name:
+        case "ubuntu":
+            cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
+            with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
+                service = file.read()
+            service = service.replace("insert_package_list", "systemd-zram-generator --distro_only ubuntu")
+            with open("/etc/systemd/system/eupnea-update.service", "w") as file:
+                file.write(service)
+            bash("systemctl start eupnea-update.service")  # start the service
+        case "arch":
+            cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
+            with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
+                service = file.read()
+            service = service.replace("insert_package_list", "iio-sensor-proxy zram-generator --distro_only arch")
+            with open("/etc/systemd/system/eupnea-update.service", "w") as file:
+                file.write(service)
+            bash("systemctl start eupnea-update.service")  # start the service
+        case _:
+            # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
+            pass
+
+    # Completely clean eupnea.json for the last time
+    with open("/etc/eupnea.json", "r") as f:
+        config = json.load(f)
+
+    # these settings were already removed in previous updates, but the json file on GitHub was not updated, therefore
+    # some newer installs still have them
+    with contextlib.suppress(KeyError):
+        del config["kernel_type"]
+    with contextlib.suppress(KeyError):
+        del config["kernel_version"]
+    with contextlib.suppress(KeyError):
+        del config["kernel_dev"]
+    with contextlib.suppress(KeyError):
+        del config["postinstall_version"]
+    with contextlib.suppress(KeyError):
+        del config["audio_version"]
+    with contextlib.suppress(KeyError):
+        del config["dev_build"]
+
+    with open("/etc/eupnea.json", "w") as file:
+        json.dump(config, file)
 #
 # def v1_2_0():
 #     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
 #     # and uninstalls the cloud-utils package as it's no longer needed.
-#
-#     # some older installs might still have this option in eupnea.json
-#     with open("/etc/eupnea.json", "r") as f:
-#         config = json.load(f)
-#     with contextlib.suppress(KeyError):
-#         del config["dev_build"]
-#     with open("/etc/eupnea.json", "w") as file:
-#         json.dump(config, file)
 #
 #     # Force stop and disable the old kernel update script
 #     with contextlib.suppress(KeyError):  # services might be deleted already, if the install is a bit newer
