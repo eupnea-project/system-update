@@ -94,7 +94,7 @@ def v1_1_5():
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
             with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
                 service = file.read()
-            service = service.replace("insert_package_list", "systemd-zram-generator --distro_only ubuntu")
+            service = service.replace("insert_package_list", "systemd-zram-generator --distro-only ubuntu")
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
@@ -103,7 +103,7 @@ def v1_1_5():
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
             with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
                 service = file.read()
-            service = service.replace("insert_package_list", "iio-sensor-proxy zram-generator --distro_only arch")
+            service = service.replace("insert_package_list", "iio-sensor-proxy zram-generator --distro-only arch")
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
