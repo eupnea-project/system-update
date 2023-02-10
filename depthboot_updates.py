@@ -85,8 +85,8 @@ def v1_1_5():
     # This update will trigger the new systemd service which waits for the package manager to finish and
     # installs/removes packages after that
 
-    # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock files
-    # -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
+    # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
+    # files -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
     with open("/etc/eupnea.json") as f:
         distro_name = json.load(f)["distro"]
     match distro_name:
@@ -131,6 +131,10 @@ def v1_1_5():
 
     with open("/etc/eupnea.json", "w") as file:
         json.dump(config, file)
+
+    # add custom zram config file to fedora as otherwise zram fails to start, presumably due to trying the wrong algo
+    if distro_name == "fedora":
+        cpfile("/tmp/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
 #
 # def v1_2_0():
 #     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
