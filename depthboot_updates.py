@@ -85,6 +85,14 @@ def v1_1_5():
     # This update will trigger the new systemd service which waits for the package manager to finish and
     # installs/removes packages after that
 
+    # Force stop and disable the old kernel update script
+    with contextlib.suppress(KeyError):  # services might be deleted already, if the install is a bit newer
+        bash("systemctl stop eupnea-update.timer eupnea-update.service")
+        bash("systemctl disable eupnea-update.timer eupnea-update.service")
+    # Remove the old kernel update script
+    rmfile("/etc/systemd/system/eupnea-update.timer")
+    rmfile("/etc/systemd/system/eupnea-update.service")
+
     # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
     # files -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
     with open("/etc/eupnea.json") as f:
@@ -142,13 +150,6 @@ def v1_1_5():
 #     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
 #     # and uninstalls the cloud-utils package as it's no longer needed.
 #
-#     # Force stop and disable the old kernel update script
-#     with contextlib.suppress(KeyError):  # services might be deleted already, if the install is a bit newer
-#         bash("systemctl stop eupnea-update.timer eupnea-update.service")
-#         bash("systemctl disable eupnea-update.timer eupnea-update.service")
-#     # Remove the old kernel update script
-#     rmfile("/etc/systemd/system/eupnea-update.timer")
-#     rmfile("/etc/systemd/system/eupnea-update.service")
 #     # Remove old kernel modules load config
 #     rmfile("/etc/modules-load.d/eupnea-modules.conf")
 #
