@@ -3,8 +3,9 @@
 # Read the full changelog here: https://github.com/eupnea-linux/depthboot-builder/releases
 
 import contextlib
-from functions import *
 import json
+
+from functions import *
 
 
 def v1_1_0():
@@ -107,7 +108,10 @@ def v1_1_5():
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
-            bash("systemctl start eupnea-update.service &")  # start the service in a new process
+            # bash aka subprocess.check_output waits for the process to finish
+            # subprocess uses /bin/sh which does not support the & operator
+            # -> use Popen instead
+            subprocess.Popen(["systemctl", "start", "eupnea-update.service"])  # start the service in a new process
         case "arch":
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
             with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
@@ -116,7 +120,10 @@ def v1_1_5():
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
-            bash("systemctl start eupnea-update.service &")  # start the service in a new process
+            # bash aka subprocess.check_output waits for the process to finish
+            # subprocess uses /bin/sh which does not support the & operator
+            # -> use Popen instead
+            subprocess.Popen(["systemctl", "start", "eupnea-update.service"])  # start the service in a new process
         case _:
             # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
             pass
