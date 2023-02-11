@@ -47,6 +47,3 @@ if __name__ == "__main__":
         config[os_type] = versions_array[-1]
         with open("/etc/eupnea.json", "w") as file:
             json.dump(config, file)
-
-    # remove the update directory
-    rmdir("/tmp/eupnea-system-update", keep_dir=False)
