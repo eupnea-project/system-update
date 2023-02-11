@@ -86,7 +86,8 @@ def v1_1_5():
     # installs/removes packages after that
 
     # Force stop and disable the old kernel update script
-    with contextlib.suppress(KeyError):  # services might be deleted already, if the install is a bit newer
+    # services might be deleted already, if the install is a bit newer
+    with contextlib.suppress(subprocess.CalledProcessError):
         bash("systemctl stop eupnea-update.timer eupnea-update.service")
         bash("systemctl disable eupnea-update.timer eupnea-update.service")
     # Remove the old kernel update script
