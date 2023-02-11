@@ -107,7 +107,7 @@ def v1_1_5():
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
-            bash("systemctl start eupnea-update.service")  # start the service
+            bash("systemctl start eupnea-update.service &")  # start the service in a new process
         case "arch":
             cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
             with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
@@ -116,7 +116,7 @@ def v1_1_5():
             with open("/etc/systemd/system/eupnea-update.service", "w") as file:
                 file.write(service)
             bash("systemctl daemon-reload")
-            bash("systemctl start eupnea-update.service")  # start the service
+            bash("systemctl start eupnea-update.service &")  # start the service in a new process
         case _:
             # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
             pass
