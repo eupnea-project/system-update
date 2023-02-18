@@ -5,7 +5,6 @@
 import contextlib
 import json
 import os
-import threading
 
 from functions import *
 
@@ -23,8 +22,7 @@ def start_update_service(packages_list: str) -> None:
     # bash aka subprocess.check_output waits for the process to finish
     # subprocess uses /bin/sh which does not support the & operator
     # -> use Popen and start it in a new process group
-    bash("systemctl start eupnea-update.service")
-    # subprocess.Popen(["systemctl", "start", "eupnea-update.service"], preexec_fn=os.setsid)
+    subprocess.Popen(["systemctl", "start", "eupnea-update.service"], preexec_fn=os.setsid)
 
 
 def v1_1_0():
@@ -124,12 +122,7 @@ def v1_1_5():
         case "ubuntu":
             start_update_service("systemd-zram-generator")
         case "arch":
-            background_thread = threading.Thread(target=start_update_service, args=("iio-sensor-proxy zram-generator",))
-            background_thread.daemon = True
-
-            # Start the thread
-            background_thread.start()
-            # start_update_service("iio-sensor-proxy zram-generator")
+            start_update_service("iio-sensor-proxy zram-generator")
         case _:
             # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
             pass
