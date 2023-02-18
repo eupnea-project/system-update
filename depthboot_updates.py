@@ -4,8 +4,25 @@
 
 import contextlib
 import json
+import os
 
 from functions import *
+
+
+def start_update_service(packages_list: str) -> None:
+    """This function sets up the update systemd unit and starts it in a new process"""
+    # copy template service file
+    cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
+    with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
+        service = file.read()
+    service = service.replace("insert_package_list", packages_list)  # replace placeholder with package list
+    with open("/etc/systemd/system/eupnea-update.service", "w") as file:
+        file.write(service)
+    bash("systemctl daemon-reload")  # reload systemd to recognize the new service
+    # bash aka subprocess.check_output waits for the process to finish
+    # subprocess uses /bin/sh which does not support the & operator
+    # -> use Popen and start it in a new process group
+    subprocess.Popen(["systemctl", "start", "eupnea-update.service"], preexec_fn=os.setsid)
 
 
 def v1_1_0():
@@ -96,34 +113,16 @@ def v1_1_5():
     rmfile("/etc/systemd/system/eupnea-update.service")
 
     # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
-    # files -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
+    # files
+    # v1_1_3 attempted to install zram-generator, which also did not work
+    # -> install iio-sensor-proxy and zram-generator via the new systemd service on arch
     with open("/etc/eupnea.json") as f:
         distro_name = json.load(f)["distro_name"]
     match distro_name:
         case "ubuntu":
-            cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
-            with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
-                service = file.read()
-            service = service.replace("insert_package_list", "systemd-zram-generator")
-            with open("/etc/systemd/system/eupnea-update.service", "w") as file:
-                file.write(service)
-            bash("systemctl daemon-reload")
-            # bash aka subprocess.check_output waits for the process to finish
-            # subprocess uses /bin/sh which does not support the & operator
-            # -> use Popen instead
-            subprocess.Popen(["systemctl", "start", "eupnea-update.service"])  # start the service in a new process
+            start_update_service("systemd-zram-generator")
         case "arch":
-            cpfile("/usr/lib/eupnea/eupnea-update.service", "/etc/systemd/system/eupnea-update.service")
-            with open("/usr/lib/eupnea/eupnea-update.service", "r") as file:
-                service = file.read()
-            service = service.replace("insert_package_list", "iio-sensor-proxy zram-generator")
-            with open("/etc/systemd/system/eupnea-update.service", "w") as file:
-                file.write(service)
-            bash("systemctl daemon-reload")
-            # bash aka subprocess.check_output waits for the process to finish
-            # subprocess uses /bin/sh which does not support the & operator
-            # -> use Popen instead
-            subprocess.Popen(["systemctl", "start", "eupnea-update.service"])  # start the service in a new process
+            start_update_service("iio-sensor-proxy zram-generator")
         case _:
             # Fedora & Pop!_OS already have zram. Debian doesnt have systemd-generator-packages
             pass
