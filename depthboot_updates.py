@@ -4,6 +4,7 @@
 
 import contextlib
 import json
+import os
 import threading
 
 from functions import *
@@ -22,7 +23,8 @@ def start_update_service(packages_list: str) -> None:
     # bash aka subprocess.check_output waits for the process to finish
     # subprocess uses /bin/sh which does not support the & operator
     # -> use Popen and start it in a new process group
-    subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
+    bash("systemctl start eupnea-update.service")
+    # subprocess.Popen(["systemctl", "start", "eupnea-update.service"], preexec_fn=os.setsid)
 
 
 def v1_1_0():
