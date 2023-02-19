@@ -31,10 +31,11 @@ if __name__ == "__main__":
                     "report this issue on the Eupnea GitHub.")
         exit(1)
 
-    if len(versions_array) == 0:
-        # No updates available.
+    if len(versions_array) == 0:  # No updates available.
         exit(0)
     else:
+        # Create /var/tmp/eupnea-updates for the modify-packages script
+        mkdir("/var/tmp/eupnea-updates", create_parents=True)
         # Execute update scripts for all versions in the array
         for version in versions_array:
             version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
