@@ -82,8 +82,6 @@ def v1_1_4():
 def v1_1_5():
     # All previous updates tried installing and uninstalling packages from within this script which did not work due to
     # the package manager processes having lock files
-    # This update will trigger the new systemd service which waits for the package manager to finish and
-    # installs/removes packages after that
 
     # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
     # files
