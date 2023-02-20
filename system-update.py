@@ -53,4 +53,5 @@ if __name__ == "__main__":
         # bash aka subprocess.check_output waits for the process to finish
         # subprocess uses /bin/sh which does not support the & operator
         # -> use Popen instead
+        print_status("Starting eupnea-update service to install package updates...")
         subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
