@@ -41,6 +41,14 @@ if __name__ == "__main__":
             version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
             globals()[f"v{version}"]()  # This calls the function named after the version
 
+        bash("systemctl daemon-reload")
+        # Start eupnea-update service to install package updates if needed
+        # bash aka subprocess.check_output waits for the process to finish
+        # subprocess uses /bin/sh which does not support the & operator
+        # -> use Popen instead
+        print_status("Starting eupnea-update service to install package updates...")
+        subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
+
         # Update version in config with the latest version in the array
         # reload config from disk
         with open("/etc/eupnea.json", "r") as f:
@@ -48,10 +56,3 @@ if __name__ == "__main__":
         config[os_type] = versions_array[-1]
         with open("/etc/eupnea.json", "w") as file:
             json.dump(config, file)
-
-        # Start eupnea-update service to install package updates if needed
-        # bash aka subprocess.check_output waits for the process to finish
-        # subprocess uses /bin/sh which does not support the & operator
-        # -> use Popen instead
-        print_status("Starting eupnea-update service to install package updates...")
-        subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
