@@ -17,7 +17,7 @@ def v1_1_0():
 def v1_1_1():
     # This update adds a fix for auto rotate being flipped on some devices.
     # It has been added to the depthboot script a few weeks prior to this update
-    cpfile("/tmp/eupnea-system-update/configs/hwdb/61-sensor.hwdb", "/etc/udev/hwdb.d/61-sensor.hwdb")
+    cpfile("/usr/lib/eupnea-system-update/configs/hwdb/61-sensor.hwdb", "/etc/udev/hwdb.d/61-sensor.hwdb")
     bash("systemd-hwdb update")
 
     # Remove old eupnea-utils scripts
@@ -124,7 +124,7 @@ def v1_1_5():
 
     # add custom zram config file to fedora as otherwise zram fails to start, presumably due to trying the wrong algo
     if distro_name == "fedora":
-        cpfile("/tmp/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
+        cpfile("/usr/lib/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
 #
 # def v1_2_0():
 #     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
