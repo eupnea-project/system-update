@@ -65,9 +65,9 @@ def v1_1_3():
     # PopOS' zram generator only seems to work on new mainline kernels (possibly on new chromeos kernels too)
     # -> might not work until v1.2.0 (kernel package update)
     # if config["distro_name"] in ["arch", "ubuntu"]:
-    #     cpfile("/tmp/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
+    #     cpfile("/usr/lib/eupnea-system-update/configs/systemd-services/eupnea-system-update-v1.1.3.service",
     #            "/etc/systemd/system/eupnea-system-update-v1.1.3.service")
-    #     cpfile("/tmp/eupnea-system-update/configs/bash-scripts/update-v1.1.3-postinstall.sh",
+    #     cpfile("/usr/lib/eupnea-system-update/configs/bash-scripts/update-v1.1.3-postinstall.sh",
     #            "/usr/lib/eupnea/update-v1.1.3-postinstall.sh")
     #     bash("systemctl enable eupnea-system-update-v1.1.3.service")
 
