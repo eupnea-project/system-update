@@ -43,11 +43,12 @@ if __name__ == "__main__":
 
         bash("systemctl daemon-reload")
         # Start eupnea-update service to install package updates if needed
-        # bash aka subprocess.check_output waits for the process to finish
-        # subprocess uses /bin/sh which does not support the & operator
-        # -> use Popen instead
+        # systemctl start eupnea-update will wait for the service to finish, but the service is waiting for the package manager to quit -> start service in a subthread
+        # bash() uses /bin/sh and not /bin/bash, so it cant use the "&" operator
+        # Popen cant use "&" as it tries to pass it as a flag to systemctl
+        # -> use external sh file with the "&" operator
         print_status("Starting eupnea-update service to install package updates...")
-        subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
+        bash("sh /usr/lib/eupnea-system-update/configs/start-update-systemd.sh")
 
         # Update version in config with the latest version in the array
         # reload config from disk
