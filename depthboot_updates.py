@@ -85,15 +85,6 @@ def v1_1_5():
     # This update will trigger the new systemd service which waits for the package manager to finish and
     # installs/removes packages after that
 
-    # Force stop and disable the old kernel update script
-    # services might be deleted already, if the install is a bit newer
-    with contextlib.suppress(subprocess.CalledProcessError):
-        bash("systemctl stop eupnea-update.timer eupnea-update.service")
-        bash("systemctl disable eupnea-update.timer eupnea-update.service")
-    # Remove the old kernel update script
-    rmfile("/etc/systemd/system/eupnea-update.timer")
-    rmfile("/etc/systemd/system/eupnea-update.service")
-
     # v1_1_1 attempted to install iio-sensor-proxy, which did not work due to the package manager processes having lock
     # files
     # v1_1_3 attempted to install zram-generator, which also did not work
