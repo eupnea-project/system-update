@@ -48,3 +48,9 @@ if __name__ == "__main__":
         config[os_type] = versions_array[-1]
         with open("/etc/eupnea.json", "w") as file:
             json.dump(config, file)
+
+        # Start eupnea-update service to install package updates if needed
+        # bash aka subprocess.check_output waits for the process to finish
+        # subprocess uses /bin/sh which does not support the & operator
+        # -> use Popen instead
+        subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
