@@ -3,6 +3,7 @@
 # This script is used to update Depthboot/EupneaOS between releases.
 
 import json
+
 from functions import *
 
 if __name__ == "__main__":
@@ -42,12 +43,9 @@ if __name__ == "__main__":
             globals()[f"v{version}"]()  # This calls the function named after the version
 
         bash("systemctl daemon-reload")
-        # Start eupnea-update service to install package updates if needed
-        # bash aka subprocess.check_output waits for the process to finish
-        # subprocess uses /bin/sh which does not support the & operator
-        # -> use Popen instead
         print_status("Starting eupnea-update service to install package updates...")
-        subprocess.Popen(["systemctl", "start", "eupnea-update.service"])
+        # --no-block prevents systemd from waiting for the service to finish
+        bash("systemctl start --no-block eupnea-update.service")
 
         # Update version in config with the latest version in the array
         # reload config from disk
