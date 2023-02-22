@@ -42,10 +42,13 @@ if __name__ == "__main__":
             version = version.replace(".", "_")  # Functions cant have dots in their names -> replace with underscores
             globals()[f"v{version}"]()  # This calls the function named after the version
 
-        bash("systemctl daemon-reload")
-        print_status("Starting eupnea-update service to install package updates...")
-        # --no-block prevents systemd from waiting for the service to finish
-        bash("systemctl start --no-block eupnea-update.service")
+        # Do not try interacting with systemctl if running in a chroot
+        if bash("ls -di /") != "2 /":
+            print_warning("Chroot detected: Skipping systemd service activation. Ignore this if you are building")
+            bash("systemctl daemon-reload")
+            print_status("Starting eupnea-update service to install package updates...")
+            # --no-block prevents systemd from waiting for the service to finish
+            bash("systemctl start --no-block eupnea-update.service")
 
         # Update version in config with the latest version in the array
         # reload config from disk
