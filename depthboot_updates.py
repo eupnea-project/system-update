@@ -4,6 +4,7 @@
 
 import contextlib
 import json
+import os
 
 from functions import *
 
@@ -146,6 +147,10 @@ def v1_1_6():
         repo = repo.replace("kinetic", "jammy")
         with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
             file.write(repo)
+
+        # update repos to get jammy eupnea packages
+        # this will not interfere with the apt lock file
+        bash("apt-get update")
 
         # install the backported libasound2-eupnea package on jammy to support ucm configs v6 syntax
         # PopOS has an updated libasound2-eupnea package in their repo -> no need to install our backport
