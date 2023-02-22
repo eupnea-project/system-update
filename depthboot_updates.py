@@ -125,6 +125,34 @@ def v1_1_5():
     # add custom zram config file to fedora as otherwise zram fails to start, presumably due to trying the wrong algo
     if distro_name == "fedora":
         cpfile("/usr/lib/eupnea-system-update/configs/zram/zram-generator.conf", "/etc/systemd/zram-generator.conf")
+
+
+def v1_1_6():
+    # The v1.1.5 update was not applied correctly on some systems
+    # -> rerun the v1.1.5 update
+    v1_1_5()
+    # some older depthboot systems still have cloud-utils installed
+    with open("/var/tmp/eupnea-updates/v1_1_6_1.txt", "w") as f:
+        f.write("-cloud-utils")  # the package has the same name on all distros
+
+    # Fix the ubuntu version on non-kinetic installs
+    with open("/etc/eupnea.json") as f:
+        config = json.load(f)
+
+    if config["distro_version"] == "22.04":
+        # Fix the repo target on ubuntu 22.04 and popos
+        with open("/etc/apt/sources.list.d/eupnea.list", "r") as file:
+            repo = file.read()
+        repo = repo.replace("kinetic", "jammy")
+        with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
+            file.write(repo)
+
+        # install the backported libasound2-eupnea package on jammy to support ucm configs v6 syntax
+        # PopOS has an updated libasound2-eupnea package in their repo -> no need to install our backport
+        if config["distro_name"] == "ubuntu":
+            with open("/var/tmp/eupnea-updates/v1_1_6_2.txt", "w") as f:
+                f.write("libasound2-eupnea")
+
 #
 # def v1_2_0():
 #     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
