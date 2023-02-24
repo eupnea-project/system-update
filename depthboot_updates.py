@@ -166,7 +166,9 @@ def v1_2_0():
     rmfile("/etc/modules-load.d/eupnea-modules.conf")
 
     # Clean /boot from any stock kernel files
-    rmdir("/boot")
+    for file in os.listdir("/boot"):
+        if not file.__contains__("eupnea"):
+            rmdir(file, keep_dir=False)
 
     # remove all modules
     for file in os.listdir("/lib/modules"):
