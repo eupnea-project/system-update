@@ -43,7 +43,7 @@ if __name__ == "__main__":
             globals()[f"v{version}"]()  # This calls the function named after the version
 
         # Do not try interacting with systemctl if running in a chroot
-        if bash("ls -di /") != "2 /":
+        if not path_exists("/proc/mounts"):
             print_warning("Chroot detected: Skipping systemd service activation. Ignore this if you are building")
             bash("systemctl daemon-reload")
             print_status("Starting eupnea-update service to install package updates...")
