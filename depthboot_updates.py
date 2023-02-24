@@ -169,11 +169,13 @@ def v1_2_0():
     rmdir("/boot")
 
     # remove all modules
-    rmdir("/lib/modules")
+    for file in os.listdir("/lib/modules"):
+        if not file.endswith("-eupnea"):
+            rmdir(file, keep_dir=False)
 
     # remove all headers
     for file in os.listdir("/usr/src"):
-        if file.startswith("linux-headers-"):
+        if file.startswith("linux-headers-") and not file.endswith("-eupnea"):
             rmdir(file, keep_dir=False)
 
     # check if mainline or chromeos kernel is currently installed
