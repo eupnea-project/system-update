@@ -158,24 +158,29 @@ def v1_1_6():
             with open("/var/tmp/eupnea-updates/v1_1_6_2.txt", "w") as f:
                 f.write("libasound2-eupnea")
 
-#
-# def v1_2_0():
-#     # This update removes the old kernel scripts/configs and installs the new mainline-only kernel package
-#     # and uninstalls the cloud-utils package as it's no longer needed.
-#
-#     # Remove old kernel modules load config
-#     rmfile("/etc/modules-load.d/eupnea-modules.conf")
-#
-#     # Download and install the new kernel package with the system package manager + uninstall cloud-utils
-#     if path_exists("/usr/bin/apt"):
-#         bash("apt-get update -y")
-#         bash("apt-get install -y eupnea-kernel")
-#         bash("apt-get purge -y cloud-utils")
-#     elif path_exists("/usr/bin/pacman"):
-#         bash("pacman -Syyu --noconfirm")
-#         bash("pacman -S --noconfirm eupnea-kernel")
-#         bash("pacman -R --noconfirm cloud-utils")
-#     elif path_exists("/usr/bin/dnf"):
-#         bash("dnf update --refresh -y")
-#         bash("dnf install -y eupnea-kernel")
-#         bash("dnf remove -y cloud-utils")
+
+def v1_2_0():
+    # This update removes the old kernel scripts/configs and installs the new kernel packages
+
+    # Remove old kernel modules load config; the new kernels have been fixed and can now automatically load modules
+    rmfile("/etc/modules-load.d/eupnea-modules.conf")
+
+    # Clean /boot from any stock kernel files
+    rmdir("/boot")
+
+    # remove all modules
+    rmdir("/lib/modules")
+
+    # remove all headers
+    for file in os.listdir("/usr/src"):
+        if file.startswith("linux-headers-"):
+            rmdir(file, keep_dir=False)
+
+    # check if mainline or chromeos kernel is currently installed
+    kernel_version = bash("uname -r").strip()
+    if kernel_version.startswith("6."):
+        with open("/var/tmp/eupnea-updates/v1_2_0.txt", "w") as f:
+            f.write("eupnea-mainline-kernel")
+    else:
+        with open("/var/tmp/eupnea-updates/v1_2_0.txt", "w") as f:
+            f.write("eupnea-chromeos-kernel")
