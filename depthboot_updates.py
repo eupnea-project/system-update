@@ -188,3 +188,10 @@ def v1_2_0():
     else:
         with open("/var/tmp/eupnea-updates/v1_2_0.txt", "w") as f:
             f.write("eupnea-chromeos-kernel")
+
+
+def v1_2_1():
+    # the kernel packages on arch were broken -> uninstall and install again
+    v1_2_0()
+    with open("/var/tmp/eupnea-updates/a_v1_2_0.txt", "w") as f:  # add "a" to force modify-packages to read it first
+        f.write("-eupnea-mainline-kernel -eupnea-chromeos-kernel")
