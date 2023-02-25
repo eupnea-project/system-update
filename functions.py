@@ -1,4 +1,3 @@
-# FILE SOURCE: https://github.com/apacelus/python-os-functions
 import subprocess
 from pathlib import Path
 from threading import Thread
@@ -120,6 +119,10 @@ def bash(command: str) -> str:
     if verbose:
         print(output, flush=True)
     return output
+
+
+def chroot(command: str) -> str:
+    return bash(f'chroot /mnt/depthboot /bin/bash -c "{command}"')
 
 
 #######################################################################################
