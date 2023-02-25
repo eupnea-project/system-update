@@ -195,3 +195,11 @@ def v1_2_1():
     v1_2_0()
     with open("/var/tmp/eupnea-updates/a_v1_2_0.txt", "w") as f:  # add "a" to force modify-packages to read it first
         f.write("-eupnea-mainline-kernel -eupnea-chromeos-kernel")
+
+
+def v1_2_2():
+    # rename de_name in pop-os
+    with open("/etc/eupnea.json") as f:
+        config = json.load(f)
+    if config["de_name"] == "popos":
+        config["de_name"] = "cosmic-gnome"
