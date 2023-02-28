@@ -19,10 +19,10 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          # Optional commit user and author settings
-          commit_user_name: github-actions[bot] # defaults to "github-actions[bot]"
-          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com # defaults to ""
-          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com> # defaults to author of the commit that triggered the run
+          # Disable setting repo owner as commit author
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 
           # Optional. Commit message for the created commit.
           # Defaults to "Apply automatic changes"
