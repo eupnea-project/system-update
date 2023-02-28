@@ -19,6 +19,11 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
+          # Optional commit user and author settings
+          commit_user_name: github-actions[bot] # defaults to "github-actions[bot]"
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com # defaults to ""
+          commit_author: Author <actions@github.com> # defaults to author of the commit that triggered the run
+
           # Optional. Commit message for the created commit.
           # Defaults to "Apply automatic changes"
           commit_message: Update functions.py
