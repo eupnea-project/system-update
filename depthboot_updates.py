@@ -203,3 +203,12 @@ def v1_2_2():
         config = json.load(f)
     if config["de_name"] == "popos":
         config["de_name"] = "cosmic-gnome"
+
+
+def v1_2_3():
+    # libasound2-eupnea was not installed on newer Jammy Depthboot builds -> install again on all systems
+    with open("/etc/eupnea.json") as f:
+        config = json.load(f)
+    if config["distro_name"] == "ubuntu" and config["distro_version"] == "22.04":
+        with open("/var/tmp/eupnea-updates/v1_2_3.txt", "w") as f:
+            f.write("libasound2-eupnea")
