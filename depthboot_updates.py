@@ -11,7 +11,7 @@ from functions import *
 
 def v1_1_0():
     # This update was done by the old scripts updater script. It is only here for reference.
-    # update-scripts.py can be found here:  https://github.com/eupnea-linux/postinstall-scripts/blob/main/update-scripts
+    # update-scripts.py can be found here:  https://github.com/eupnea-linux/eupnea-utils/blob/main/update-scripts
     pass
 
 
