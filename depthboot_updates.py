@@ -170,10 +170,10 @@ def v1_2_0():
         if not file.__contains__("eupnea"):
             rmdir(file, keep_dir=False)
 
-    # remove all modules
-    for file in os.listdir("/lib/modules"):
-        if not file.endswith("-eupnea"):
-            rmdir(file, keep_dir=False)
+    # # remove all modules
+    # for file in os.listdir("/lib/modules"):
+    #     if not file.endswith("-eupnea"):
+    #         rmdir(file, keep_dir=False)
 
     # remove all headers
     for file in os.listdir("/usr/src"):
