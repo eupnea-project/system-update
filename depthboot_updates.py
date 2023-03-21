@@ -212,3 +212,35 @@ def v1_2_3():
     if config["distro_name"] == "ubuntu" and config["distro_version"] == "22.04":
         with open("/var/tmp/eupnea-updates/v1_2_3.txt", "w") as f:
             f.write("libasound2-eupnea")
+
+
+def v1_2_4():
+    # This update will remove the deep sleep block in sleep.conf and modify the cmdline to enable deep sleep by default
+    # There is a chance this update will trigger an NVRAM reset
+
+    # remove deep sleep block in sleep.conf if present (some testers have removed it already)
+    with open("/etc/systemd/sleep.conf", "r") as file:
+        sleep_conf = file.read().strip().splitlines()
+    if sleep_conf[-1] == "HibernateState=freeze" and sleep_conf[-2] == "SuspendState=freeze":
+        sleep_conf = sleep_conf[:-2]
+        with open("/etc/systemd/sleep.conf", "w") as file:
+            file.writelines(sleep_conf)
+
+    # modify the kernel cmdline to enable deep sleep by default
+    with open("/proc/cmdline", "r") as file:
+        current_cmdline = file.read().strip()
+    new_cmdline_file = bash("mktemp").strip()  # make a temp file to write the new cmdline to
+    print(f"Updated cmdline: {current_cmdline} mem_sleep_default=deep")
+    with open(new_cmdline_file, "w") as file:
+        file.write(f"{current_cmdline} mem_sleep_default=deep")
+    # pass temp file to install-cmdline to install the new cmdline
+    bash(f"install-cmdline --kernel-flags {new_cmdline_file}")
+
+
+# def v1_3_0():
+#     # this update installs keyd and custom keymaps
+#     with open("/var/tmp/eupnea-updates/v1_3_0.txt", "w") as f:
+#         f.write("keyd")
+#
+#     # install custom keymaps
+#     #
