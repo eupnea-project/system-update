@@ -234,7 +234,7 @@ def v1_2_4():
     with open(new_cmdline_file, "w") as file:
         file.write(f"{current_cmdline} mem_sleep_default=deep")
     # pass temp file to install-cmdline to install the new cmdline
-    bash(f"install-cmdline --kernel-flags {new_cmdline_file}")
+    bash(f"/usr/lib/eupnea/install-kernel --kernel-flags {new_cmdline_file}")
 
 
 # def v1_3_0():
