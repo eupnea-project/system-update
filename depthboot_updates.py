@@ -219,12 +219,13 @@ def v1_2_4():
     # There is a chance this update will trigger an NVRAM reset
 
     # remove deep sleep block in sleep.conf if present (some testers have removed it already)
-    with open("/etc/systemd/sleep.conf", "r") as file:
-        sleep_conf = file.read().strip().splitlines()
-    if sleep_conf[-1] == "HibernateState=freeze" and sleep_conf[-2] == "SuspendState=freeze":
-        sleep_conf = sleep_conf[:-2]
-        with open("/etc/systemd/sleep.conf", "w") as file:
-            file.writelines(sleep_conf)
+    # the code below was broken and is fixed in the next update
+    # with open("/etc/systemd/sleep.conf", "r") as file:
+    #     sleep_conf = file.read().strip().splitlines()
+    # if sleep_conf[-1] == "HibernateState=freeze" and sleep_conf[-2] == "SuspendState=freeze":
+    #     sleep_conf = sleep_conf[:-2]
+    #     with open("/etc/systemd/sleep.conf", "w") as file:
+    #         file.writelines(sleep_conf)
 
     # modify the kernel cmdline to enable deep sleep by default
     with open("/proc/cmdline", "r") as file:
@@ -236,6 +237,14 @@ def v1_2_4():
     # pass temp file to install-cmdline to install the new cmdline
     bash(f"/usr/lib/eupnea/install-kernel --kernel-flags {new_cmdline_file}")
 
+
+def v1_2_5():
+    # the previous update stored the sleep.conf files in a broken way
+    # (not really broken, but they weren't reverted to stock either)
+    with open("/etc/eupnea.json", "r") as file:
+        sys_conf = json.load(file)
+    cpfile(f"/usr/lib/eupnea-system-update/configs/sleep_conf/{sys_conf['distro_name']}-"
+           f"{sys_conf['distro_version']}-sleep.conf", "/etc/systemd/sleep.conf")
 
 # def v1_3_0():
 #     # this update installs keyd and custom keymaps
