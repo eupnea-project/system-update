@@ -45,6 +45,7 @@ if __name__ == "__main__":
         # Do not try interacting with systemctl if running in a chroot
         if not path_exists("/proc/mounts"):
             print_warning("Chroot detected: Skipping systemd service activation. Ignore this if you are building")
+        else:
             bash("systemctl daemon-reload")
             print_status("Starting eupnea-update service to install package updates...")
             # --no-block prevents systemd from waiting for the service to finish
