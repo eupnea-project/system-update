@@ -241,10 +241,17 @@ def v1_2_6():
     # somehow a lot of devices are still on old kernels -> reapply the kernel update
     v1_2_0()
 
-# def v1_3_0():
-#     # this update installs keyd and custom keymaps
-#     with open("/var/tmp/eupnea-updates/v1_3_0.txt", "w") as f:
-#         f.write("keyd")
-#
-#     # install custom keymaps
-#     #
+
+def v1_3_0():
+    # this update installs keyd and custom keymaps
+
+    # restore stock xkb pc file
+    cpfile("/usr/share/X11/xkb/symbols/pc.default", "/usr/share/X11/xkb/symbols/pc")
+    rmfile("/usr/share/X11/xkb/symbols/pc.default")  # not needed anymore
+
+    # install keyd
+    with open("/var/tmp/eupnea-updates/v1_3_0.txt", "w") as f:
+        f.write("keyd")
+
+    # reenable the eupnea-postinstall for automatic keymap installation after the keyd package is installed
+    bash("systemctl enable eupnea-postinstall")
