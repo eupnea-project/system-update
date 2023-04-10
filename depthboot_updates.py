@@ -252,6 +252,3 @@ def v1_3_0():
     # install keyd
     with open("/var/tmp/eupnea-updates/v1_3_0.txt", "w") as f:
         f.write("keyd")
-
-    # reenable the eupnea-postinstall for automatic keymap installation after the keyd package is installed
-    bash("systemctl enable eupnea-postinstall")
