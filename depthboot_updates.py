@@ -136,7 +136,7 @@ def v1_1_6():
     with open("/var/tmp/eupnea-updates/v1_1_6_1.txt", "w") as f:
         f.write("-cloud-utils")  # the package has the same name on all distros
 
-    # Fix the ubuntu version on non-kinetic installs
+    # Fix the ubuntu version on  installs
     with open("/etc/eupnea.json") as f:
         config = json.load(f)
 
@@ -252,3 +252,13 @@ def v1_3_0():
     # install keyd
     with open("/var/tmp/eupnea-updates/v1_3_0.txt", "w") as f:
         f.write("keyd")
+
+
+def v1_3_1():
+    # update kinetic repo to lunar
+    # will not do anything on 22.04 based systems
+    with open("/etc/apt/sources.list.d/eupnea.list", "r") as file:
+        repo = file.read()
+    repo = repo.replace("kinetic", "lunar")
+    with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
+        file.write(repo)
