@@ -262,3 +262,18 @@ def v1_3_1():
     repo = repo.replace("kinetic", "lunar")
     with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
         file.write(repo)
+
+
+def v1_3_2():
+    # this update will update the distro version in the eupnea.json file
+    # Only applies to fedora and ubuntu as those had updates recently
+    with open("/etc/eupnea.json", "r") as file:
+        sys_conf = json.load(file)
+    with open("/etc/os-release", "r") as file:
+        os_release = file.read().strip()
+    if os_release.__contains__("23.04 (Lunar Lobster)"):
+        sys_conf["distro_version"] = "23.04"
+    elif os_release.__contains__("Fedora Linux 38 (Workstation Edition)"):
+        sys_conf["distro_version"] = "38"
+    with open("/etc/eupnea.json", "w") as file:
+        json.dump(sys_conf, file, indent=4)
