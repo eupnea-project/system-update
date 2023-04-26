@@ -257,11 +257,12 @@ def v1_3_0():
 def v1_3_1():
     # update kinetic repo to lunar
     # will not do anything on 22.04 based systems
-    with open("/etc/apt/sources.list.d/eupnea.list", "r") as file:
-        repo = file.read()
-    repo = repo.replace("kinetic", "lunar")
-    with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
-        file.write(repo)
+    with contextlib.suppress(FileNotFoundError):
+        with open("/etc/apt/sources.list.d/eupnea.list", "r") as file:
+            repo = file.read()
+        repo = repo.replace("kinetic", "lunar")
+        with open("/etc/apt/sources.list.d/eupnea.list", "w") as file:
+            file.write(repo)
 
 
 def v1_3_2():
