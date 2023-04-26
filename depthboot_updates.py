@@ -277,3 +277,18 @@ def v1_3_2():
         sys_conf["distro_version"] = "38"
     with open("/etc/eupnea.json", "w") as file:
         json.dump(sys_conf, file, indent=4)
+
+
+def v1_3_3():
+    # the keyd packages postinstall was broken when installed from a chroot -> some newer systems don't have keyd
+    # this update will install keyd
+    with open("/var/tmp/eupnea-updates/v1_3_3.txt", "w") as f:
+        f.write("keyd")
+
+# def v1_3_4():
+#     # add some kernel parameters to fix some devices getting stuck on shutdown/reboot
+#     with open("/proc/cmdline", "r") as file:
+#         current_cmdline = file.read().strip()
+#     new_cmdline_file = bash("mktemp").strip()  # make a temp file to write the new cmdline to
+#     with open(new_cmdline_file, "w") as file:
+#         file.write(f"{current_cmdline} ")
