@@ -286,10 +286,16 @@ def v1_3_3():
     with open("/var/tmp/eupnea-updates/v1_3_3.txt", "w") as f:
         f.write("keyd")
 
-# def v1_3_4():
-#     # add some kernel parameters to fix some devices getting stuck on shutdown/reboot
-#     with open("/proc/cmdline", "r") as file:
-#         current_cmdline = file.read().strip()
-#     new_cmdline_file = bash("mktemp").strip()  # make a temp file to write the new cmdline to
-#     with open(new_cmdline_file, "w") as file:
-#         file.write(f"{current_cmdline} ")
+
+def v1_3_4():
+    # remove the cmdline argument that forces deep sleep
+    # deep sleep has been deprecated by Intel. Devices that support it will still use it by default
+    with open("/proc/cmdline", "r") as file:
+        current_cmdline = file.read().strip()
+    new_cmdline_file = bash("mktemp").strip()  # make a temp file to write the new cmdline to
+    new_cmdline = current_cmdline.replace(" mem_sleep_default=deep", "").strip()
+    print(f"Updated cmdline: {new_cmdline}")
+    with open(new_cmdline_file, "w") as file:
+        file.write(new_cmdline)
+    # pass temp file to install-cmdline to install the new cmdline
+    bash(f"/usr/lib/eupnea/install-kernel --kernel-flags {new_cmdline_file}")
