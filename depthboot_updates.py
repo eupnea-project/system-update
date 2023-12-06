@@ -299,3 +299,8 @@ def v1_3_4():
         file.write(new_cmdline)
     # pass temp file to install-cmdline to install the new cmdline
     bash(f"/usr/lib/eupnea/install-kernel --kernel-flags {new_cmdline_file}")
+
+
+def v1_4_0():
+    # this release is purely symbolic and does not contain any updates to previous releases
+    pass
